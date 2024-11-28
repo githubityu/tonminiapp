@@ -6,6 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tonminiapp/web3utils.dart';
 import 'package:tonutils/tonutils.dart';
 
 
@@ -14,7 +15,7 @@ void main() {
   test('Counter increments smoke test', () async {
     // Build our app and trigger a frame.
     // Client uses testnet by default:
-    final client = TonJsonRpc();
+    final client = Web3Utils.getClient();
 
 // But you can specify an alternative endpoint, say, for mainnet:
 //     final client = TonJsonRpc('https://toncenter.com/api/v2/jsonRPC');
@@ -29,6 +30,9 @@ void main() {
 // Wallet contracts use workchain = 0, but this can be overriden
     var wallet = WalletContractV4R2.create(publicKey: keyPair.publicKey);
 
+
+
+
 // Opening a wallet contract (this specifies the TonJsonRpc as a ContractProvider)
     var openedContract = client.open(wallet);
 
@@ -36,8 +40,9 @@ void main() {
     final isDeployed = await client.isContractDeployed(wallet.address);
 
     var address = wallet.address.toString(isTestOnly: true);
-    var balance = await openedContract.getBalance();
-    print("address=$address  balance=$balance");
+    var balance2 = await openedContract.getBalance();
+    var balance = await wallet.getBalance();
+    print("address=$address  balance=$balance balance2=$balance2");
     if(!isDeployed){
       print("Wallet is not deployed. Attempting to deploy...");
       return;
